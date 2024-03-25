@@ -32,14 +32,14 @@ apt-get update -y && apt-get upgrade -y && git clone https://github.com/TheBizar
 
 ## **L3MON SETUP**
 
+Execute the commands provided below one by one
 
-execute below commands simultaneously
 
-press (ctrl + c) to stop lemon server
+●press (ctrl + c) to stop lemon server
 
-cd (to move to home directory)
+●cd (to move to home directory)
 
-now go to any md5 hash generator website convert your password into md5 hash
+●now go to any md5 hash generator website convert your password into md5 hash
 
 ● Edit username and password by executing below command
  
@@ -47,11 +47,11 @@ now go to any md5 hash generator website convert your password into md5 hash
   nano /data/data/com.termux/files/usr/share/lemon/maindb.json
   ```
 
-paste md5 hash in password section
+●paste md5 hash in password section
 
-now save changes by pressing (ctrl + o) then enter & (ctrl + x)
+●now save changes by pressing (ctrl + o) then enter & (ctrl + x)
 
-all done start L3MON by executing lemon
+●all done start L3MON by executing lemon
 
 
 ## DISCLAIMER ⚠️ 
