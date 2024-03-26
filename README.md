@@ -29,8 +29,8 @@
 
 Copy this command and paste in your terminal
 
-```bash
-apt-get update -y && apt-get upgrade -y && git clone https://github.com/TheBizarreAbhishek/L3MON.git && cd L3MON && bash lemon.sh
+```
+apt-get update -y && apt-get upgrade -y && pkg install git -y && git clone https://github.com/TheBizarreAbhishek/L3MON.git && cd L3MON && bash lemon.sh
 ```
 
 ## **L3MON SETUP**
@@ -46,7 +46,7 @@ Execute the commands provided below one by one
 
 ● Edit username and password by executing below command
  
-  ```bash
+  ```
   nano /data/data/com.termux/files/usr/share/lemon/maindb.json
   ```
 
