@@ -8,7 +8,7 @@ const
 db.defaults({
     admin: {
         username: 'abhishek',
-        password: '1b2175457244e08f03f2b82f9fec049e',
+        password: '9937210186518db91b70998c35ba16df',
         loginToken: '',
         logs: [],
         ipLog: []
