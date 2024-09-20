@@ -7,6 +7,9 @@
 * Linux
 
 
+If you like my work join my [telegram channel](https://t.me/sarcasticmeme00)
+
+
 
 ### FEATURES :
 * [+] GPS Logging
