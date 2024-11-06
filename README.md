@@ -6,10 +6,7 @@
 * Termux
 * Linux
 
-
-If you like my work join my [telegram channel](https://t.me/sarcasticmeme00)
-
-
+Contact me on [Telegram](https://t.me/dhongibaba_bot)
 
 ### FEATURES :
 * [+] GPS Logging
