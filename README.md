@@ -8,6 +8,7 @@
 
 Contact me on [Telegram](https://t.me/dhongibaba_bot)
 
+If you want this project to be alive and updated, considers [donating me](https://www.paypal.me/TheGreatBabaAbhishek)
 ### FEATURES :
 * [+] GPS Logging
 * [+] Microphone Recording
