@@ -6,7 +6,7 @@
 * Termux
 * Linux
 
-Contact me on [Telegram](https://t.me/TheBizarreBot)
+Contact me on [Telegram](https://t.me/BizarreVerse/4)
 
 If you want this project to be alive and updated, considers [donating me](https://www.paypal.me/TheGreatBabaAbhishek)
 ### FEATURES :
