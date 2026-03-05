@@ -98,10 +98,7 @@ install_java() {
     info "Installing Java..."
     case $PLATFORM in
         termux)
-            pkg install -y openjdk-17
-            # Also install native apktool — bundled apktool.jar uses desktop ELF aapt binaries
-            # that crash on Android ARM (exit 132/2, "ELF: not found")
-            pkg install -y apktool ;;
+            pkg install -y openjdk-17 ;;
         macos)
             brew install openjdk
             # Link for system java wrappers
@@ -117,6 +114,42 @@ install_java() {
             error "Cannot auto-install Java on this platform. Install any JDK from https://adoptium.net" ;;
     esac
     success "Java installed: $(java -version 2>&1 | head -1)"
+}
+
+# ── Install apktool (Termux only) ────────────────────────────
+install_apktool_termux() {
+    if [ "$PLATFORM" != "termux" ]; then return; fi
+
+    if command -v apktool &>/dev/null; then
+        success "apktool already installed: $(apktool --version 2>/dev/null || echo 'ok')"
+        return
+    fi
+
+    info "Installing apktool for Termux..."
+
+    # Method 1: Try tur-repo (Termux User Repository)
+    if pkg install -y tur-repo 2>/dev/null && pkg install -y apktool 2>/dev/null; then
+        success "apktool installed via tur-repo."
+        return
+    fi
+
+    # Method 2: Manually download latest apktool jar + create wrapper
+    warn "tur-repo not available. Downloading apktool manually..."
+    APKTOOL_VER="2.9.3"
+    APKTOOL_JAR="$PREFIX/lib/apktool.jar"
+    APKTOOL_BIN="$PREFIX/bin/apktool"
+
+    curl -L --progress-bar \
+        "https://github.com/iBotPeaches/Apktool/releases/download/v${APKTOOL_VER}/apktool_${APKTOOL_VER}.jar" \
+        -o "$APKTOOL_JAR"
+
+    # Create wrapper script
+    cat > "$APKTOOL_BIN" << APKTOOL_WRAPPER
+#!/bin/bash
+exec java -jar "$APKTOOL_JAR" "\$@"
+APKTOOL_WRAPPER
+    chmod +x "$APKTOOL_BIN"
+    success "apktool $APKTOOL_VER installed manually."
 }
 
 # ── Install Git ──────────────────────────────────────────────
@@ -202,19 +235,22 @@ STARTSCRIPT
 main() {
     detect_platform
 
-    info "Step 1/5 — Checking Git..."
+    info "Step 1/6 — Checking Git..."
     install_git
 
-    info "Step 2/5 — Checking Node.js..."
+    info "Step 2/6 — Checking Node.js..."
     install_node
 
-    info "Step 3/5 — Checking Java..."
+    info "Step 3/6 — Checking Java..."
     install_java
 
-    info "Step 4/5 — Installing npm dependencies..."
+    info "Step 4/6 — Installing apktool (Termux)..."
+    install_apktool_termux
+
+    info "Step 5/6 — Installing npm dependencies..."
     install_npm_deps
 
-    info "Step 5/5 — Setting up keystore & start script..."
+    info "Step 6/6 — Setting up keystore & start script..."
     setup_keystore
     create_start_script
 
