@@ -98,7 +98,10 @@ install_java() {
     info "Installing Java..."
     case $PLATFORM in
         termux)
-            pkg install -y openjdk-17 ;;
+            pkg install -y openjdk-17
+            # Also install native apktool — bundled apktool.jar uses desktop ELF aapt binaries
+            # that crash on Android ARM (exit 132/2, "ELF: not found")
+            pkg install -y apktool ;;
         macos)
             brew install openjdk
             # Link for system java wrappers

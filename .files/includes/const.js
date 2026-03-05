@@ -31,7 +31,13 @@ const jarsignerBin = 'jarsigner';
 
 exports.platform = { isTermux, isWindows };
 
-exports.buildCommand = javaBin + ' -jar "' + exports.apkTool + '" b "' + exports.smaliPath + '" -o "' + exports.apkBuildPath + '"';
+// On Termux use native apktool (pkg install apktool) — bundled apktool.jar contains
+// desktop ELF aapt binaries that crash on Android ARM (exit 2, "ELF: not found")
+const apktoolCmd = isTermux
+    ? 'apktool'
+    : (javaBin + ' -jar "' + exports.apkTool + '"');
+
+exports.buildCommand = apktoolCmd + ' b "' + exports.smaliPath + '" -o "' + exports.apkBuildPath + '"';
 exports.signCommand = jarsignerBin + ' -keystore "' + exports.keystorePath + '" -storepass ' + exports.keystorePass + ' -keypass ' + exports.keystorePass + ' -signedjar "' + exports.apkSignedBuildPath + '" "' + exports.apkBuildPath + '" ' + exports.keystoreAlias;
 
 exports.messageKeys = {
