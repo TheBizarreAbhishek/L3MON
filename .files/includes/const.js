@@ -26,8 +26,8 @@ exports.keystoreAlias = 'testkey';
 const os = require('os');
 const isTermux = !!process.env.TERMUX_VERSION || (process.platform === 'linux' && os.homedir().includes('/data/data/com.termux'));
 const isWindows = process.platform === 'win32';
-const javaBin = isTermux ? 'proot java' : 'java';
-const jarsignerBin = isTermux ? 'jarsigner' : (isWindows ? 'jarsigner' : 'jarsigner');
+const javaBin = 'java'; // proot not needed on modern Termux (Android 8+), causes SIGILL (exit 132)
+const jarsignerBin = 'jarsigner';
 
 exports.platform = { isTermux, isWindows };
 
