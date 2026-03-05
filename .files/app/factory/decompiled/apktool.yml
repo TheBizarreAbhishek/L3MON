@@ -10,7 +10,7 @@ packageInfo:
   renameManifestPackage: null
 sdkInfo:
   minSdkVersion: '11'
-  targetSdkVersion: '24'
+  targetSdkVersion: '29'
 sharedLibrary: false
 sparseResources: false
 unknownFiles: {}

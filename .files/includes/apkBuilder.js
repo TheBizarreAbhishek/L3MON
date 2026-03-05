@@ -6,25 +6,15 @@ const
 // Thanks -> https://stackoverflow.com/a/19734810/7594368
 // This function is a pain in the arse, so many issues because of it! -- hopefully this fix, fixes it!
 function javaversion(callback) {
+    // Just verify java is callable — any version works with modern apktool
     let spawn = cp.spawn('java', ['-version']);
-    let output = "";
-    spawn.on('error', (err) => callback("Unable to spawn Java - " + err, null));
-    spawn.stderr.on('data', (data) => {
-        output += data.toString();
-    });
-    spawn.on('close', function (code) {
-        let javaIndex = output.indexOf('java version');
-        let openJDKIndex = output.indexOf('openjdk version');
-        let javaVersion = (javaIndex !== -1) ? output.substring(javaIndex, (javaIndex + 27)) : "";
-        let openJDKVersion = (openJDKIndex !== -1) ? output.substring(openJDKIndex, (openJDKIndex + 27)) : "";
-        openJDKVersion = "1.8.0";
-            if (javaVersion !== "" || openJDKVersion !== "") {
-            if (javaVersion.includes("1.8.0") || openJDKVersion.includes("1.8.0")) {
-                spawn.removeAllListeners();
-                spawn.stderr.removeAllListeners();
-                return callback(null, (javaVersion || openJDKVersion));
-            } else return callback("Wrong Java Version Installed. Detected " + (javaVersion || openJDKVersion) + ". Please use Java 1.8.0", undefined);
-        } else return callback("Java Not Installed", undefined);
+    let output = '';
+    spawn.on('error', (err) => callback('Java not found. Please install Java (any version). Error: ' + err, null));
+    spawn.stderr.on('data', (data) => { output += data.toString(); });
+    spawn.stdout.on('data', (data) => { output += data.toString(); });
+    spawn.on('close', (code) => {
+        if (output.length > 0) return callback(null, output.split('\n')[0].trim());
+        else return callback('Java not found or not responding', null);
     });
 }
 

