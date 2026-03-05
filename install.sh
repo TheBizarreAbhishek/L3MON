@@ -90,7 +90,7 @@ install_node() {
 
 # ── Install Java (JDK) ───────────────────────────────────────
 install_java() {
-    if command -v java &>/dev/null; then
+    if java -version &>/dev/null 2>&1; then
         JAVA_VER=$(java -version 2>&1 | head -1)
         success "Java already installed: $JAVA_VER"
         return
