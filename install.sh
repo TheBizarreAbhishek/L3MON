@@ -127,6 +127,9 @@ install_apktool_termux() {
 
     info "Installing apktool for Termux..."
 
+    # Install zip (needed for smali+zip APK rebuild path)
+    pkg install -y zip 2>/dev/null || true
+
     # Method 1: Try tur-repo (Termux User Repository)
     if pkg install -y tur-repo 2>/dev/null && pkg install -y apktool 2>/dev/null; then
         success "apktool installed via tur-repo."

